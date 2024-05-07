@@ -68,7 +68,9 @@
           "prefer-template": "error",
           "@typescript-eslint/no-unnecessary-type-assertion": "error",
           "@typescript-eslint/member-ordering": "error",
-          "@typescript-eslint/no-extraneous-class": "off"
+          "@typescript-eslint/no-explicit-any": "off",
+          "@typescript-eslint/no-extraneous-class": "off",
+          "@typescript-eslint/unbound-method": "off"
         }
       },
       {

@@ -4,4 +4,7 @@ export type AppStateModel = Partial<
     Readonly<{
         posts: readonly Post[];
     }>
->;
+> &
+    Readonly<{
+        isGettingPosts: boolean;
+    }>;
