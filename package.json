@@ -19,6 +19,7 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "@ngxs/store": "^3.8.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
@@ -32,6 +33,7 @@
     "@angular-eslint/template-parser": "17.4.0",
     "@angular/cli": "^17.3.6",
     "@angular/compiler-cli": "^17.3.0",
+    "@ngxs/devtools-plugin": "^3.8.2",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "7.8.0",
     "@typescript-eslint/parser": "7.8.0",
