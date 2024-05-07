@@ -5,21 +5,17 @@ import {
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
+import { range } from 'ramda';
 
 import { environment } from '../../environments/environment';
 import { Post, PostBuilder } from '../types/post';
 import { GetPosts } from './actions';
 import { AppState } from './app.state';
-import { AppStateModel } from './app.state.model';
+import { reset } from './functions';
 
-const anyPosts: readonly Post[] = [
-    new PostBuilder().with('id', 1).build(),
-    new PostBuilder().with('id', 2).build(),
-    new PostBuilder().with('id', 3).build(),
-];
-
-const reset = (store: Store, state: AppStateModel): void =>
-    store.reset({ app: state });
+const anyPosts: readonly Post[] = range(1, 101).map((n) =>
+    new PostBuilder().with('id', n).build()
+);
 
 describe('AppState', () => {
     let httpTestingController: HttpTestingController;
@@ -59,7 +55,9 @@ describe('AppState', () => {
 
                 tick();
 
-                httpTestingController.expectNone(`${environment.api}/posts`);
+                expect(() =>
+                    httpTestingController.expectNone(`${environment.api}/posts`)
+                ).not.toThrow();
                 httpTestingController.verify();
             }));
         });
