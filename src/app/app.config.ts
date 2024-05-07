@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsModule } from '@ngxs/store';
 
+import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { AppState } from './state-management';
 
