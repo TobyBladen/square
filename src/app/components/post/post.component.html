@@ -4,5 +4,9 @@
         mat-fab
         extended
         color="{{ (isSelected$ | async) ? 'accent' : 'primary' }}">
-    <p class="text-xs">Post id: {{ post.id }}</p>
+    <div class="text-xs"
+         data-testid="post-square-key-name">{{ activeKey.name }}:</div>
+
+    <div class="text-xs"
+         data-testid="post-square-key-item">{{ post[activeKey.item].toString() | truncate:15 }}</div>
 </button>

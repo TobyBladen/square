@@ -10,7 +10,8 @@ import { Template } from '../../classes/template';
 import { AppState } from '../../state-management';
 import { SelectPost } from '../../state-management/actions';
 import { reset } from '../../state-management/functions';
-import { anyPosts } from '../../types/post';
+import { NamedItem } from '../../types/named-item';
+import { anyPosts, Post, postKeys } from '../../types/post';
 import { PostComponent } from './post.component';
 
 @Component({
@@ -39,6 +40,7 @@ describe('PostComponent', () => {
             ],
         }).compileComponents();
     });
+
     beforeEach(() => {
         const fixture = TestBed.createComponent(TestComponent);
         testComponent = fixture.componentInstance;
@@ -56,7 +58,24 @@ describe('PostComponent', () => {
     });
 
     describe('template', () => {
+        const postSquareKeyNameSelector =
+            "[data-testid='post-square-key-name']";
+        const postSquareKeyItemSelector =
+            "[data-testid='post-square-key-item']";
         const postSquareSelector = '[data-testid="post-square"]';
+
+        const expectToShowPostKey = (postKey: NamedItem<keyof Post>): void => {
+            expect(
+                testComponentTemplate.getTextContent(
+                    By.css(postSquareKeyNameSelector)
+                )
+            ).toEqual(`${postKey.name}:`);
+            expect(
+                testComponentTemplate.getTextContent(
+                    By.css(postSquareKeyItemSelector)
+                )
+            ).toEqual(testComponent.post[postKey.item].toString());
+        };
 
         it('shows the post square', () => {
             expect(
@@ -116,22 +135,67 @@ describe('PostComponent', () => {
                 posts: anyPosts,
                 selectedPostId: anyPosts[0].id,
             });
-
             testComponentTemplate.detectChanges();
-
             expect(
                 testComponentTemplate.get(By.css(postSquareSelector))
                     ?.attributes['ng-reflect-color']
             ).toEqual('accent');
 
             testComponent.post = anyPosts[4];
-
             testComponentTemplate.detectChanges();
 
             expect(
                 testComponentTemplate.get(By.css(postSquareSelector))
                     ?.attributes['ng-reflect-color']
             ).toEqual('primary');
+        });
+
+        it('cycles through the post keys when clicked', () => {
+            reset(store, {
+                isGettingPosts: false,
+                posts: anyPosts,
+            });
+            testComponentTemplate.detectChanges();
+
+            postKeys.forEach((postKey) => {
+                expectToShowPostKey(postKey);
+
+                testComponentTemplate.click(By.css(postSquareSelector));
+                testComponentTemplate.detectChanges();
+            });
+
+            expectToShowPostKey(postKeys[0]);
+        });
+
+        describe('resets the active post key', () => {
+            beforeEach(() => {
+                reset(store, {
+                    isGettingPosts: false,
+                    posts: anyPosts,
+                });
+
+                testComponentTemplate.click(By.css(postSquareSelector));
+                testComponentTemplate.detectChanges();
+                expectToShowPostKey(postKeys[1]);
+            });
+
+            it('when the post is changed', () => {
+                testComponent.post = anyPosts[4];
+                testComponentTemplate.detectChanges();
+            });
+
+            it('when the post is deselected', () => {
+                reset(store, {
+                    isGettingPosts: false,
+                    posts: anyPosts,
+                    selectedPostId: anyPosts[1].id,
+                });
+            });
+
+            afterEach(() => {
+                testComponentTemplate.detectChanges();
+                expectToShowPostKey(postKeys[0]);
+            });
         });
     });
 });
