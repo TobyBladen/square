@@ -1,12 +1,12 @@
-<button class="flex flex-col !h-16 !w-16 lg:!h-24 lg:!w-24 xl:!h-32 xl:!w-32 justify-center items-center"
+<button class="flex flex-col !h-24 !w-24 xl:!h-32 xl:!w-32 justify-center items-center"
         (click)="selectPost()"
         data-testid="post-square"
         mat-fab
         extended
         color="{{ (isSelected$ | async) ? 'accent' : 'primary' }}">
-    <div class="text-xs"
+    <div class="text-xs xl:text-sm"
          data-testid="post-square-key-name">{{ activeKey.name }}:</div>
 
-    <div class="text-xs"
+    <div class="text-xs xl:text-sm"
          data-testid="post-square-key-item">{{ post[activeKey.item].toString() | truncate:15 }}</div>
 </button>
