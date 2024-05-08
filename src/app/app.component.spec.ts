@@ -3,19 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { range } from 'ramda';
 import { Observable } from 'rxjs';
 
 import { AppComponent } from './app.component';
-import { Template } from './classes/template/template.class';
+import { Template } from './classes/template';
 import { AppState } from './state-management';
 import { GetPosts } from './state-management/actions';
 import { reset } from './state-management/functions';
-import { Post, PostBuilder } from './types/post';
-
-const anyPosts: readonly Post[] = range(1, 101).map((n) =>
-    new PostBuilder().with('id', n).build()
-);
+import { anyPosts } from './types/post';
 
 describe('AppComponent', () => {
     let actions$: Observable<any>;
@@ -60,6 +55,14 @@ describe('AppComponent', () => {
     });
 
     describe('template', () => {
+        it('shows the heading', () => {
+            reset(store, { isGettingPosts: false, posts: anyPosts });
+
+            template.detectChanges();
+
+            expect(template.get(By.css('sq-heading'))).toBeTruthy();
+        });
+
         it('shows all the posts', () => {
             reset(store, { isGettingPosts: false, posts: anyPosts });
 

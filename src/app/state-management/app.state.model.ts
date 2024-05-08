@@ -1,10 +1,7 @@
 import { Post } from '../types/post';
 
-export type AppStateModel = Partial<
-    Readonly<{
-        posts: readonly Post[];
-    }>
-> &
-    Readonly<{
-        isGettingPosts: boolean;
-    }>;
+export type AppStateModel = Readonly<{
+    isGettingPosts: boolean;
+    selectedPostId?: number;
+    posts?: readonly Post[];
+}>;

@@ -1,5 +1,6 @@
-import { DebugElement, Predicate } from '@angular/core';
+import { DebugElement, Predicate, Type } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 interface NativeElement {
     textContent: string;
@@ -33,6 +34,11 @@ export class Template<T> {
 
     getAll(predicate: Predicate<DebugElement>): DebugElement[] {
         return this.fixture.debugElement.queryAll(predicate);
+    }
+
+    getChildComponent(component: Type<any>): any {
+        return this.fixture.debugElement.query(By.directive(component))
+            ?.componentInstance;
     }
 
     getCount(predicate: Predicate<DebugElement>): number {

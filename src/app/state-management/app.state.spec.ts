@@ -5,17 +5,12 @@ import {
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
-import { range } from 'ramda';
 
 import { environment } from '../../environments/environment';
-import { Post, PostBuilder } from '../types/post';
-import { GetPosts } from './actions';
+import { anyPosts } from '../types/post';
+import { GetPosts, SelectPost } from './actions';
 import { AppState } from './app.state';
 import { reset } from './functions';
-
-const anyPosts: readonly Post[] = range(1, 101).map((n) =>
-    new PostBuilder().with('id', n).build()
-);
 
 describe('AppState', () => {
     let httpTestingController: HttpTestingController;
@@ -134,6 +129,87 @@ describe('AppState', () => {
         });
     });
 
+    describe('selectPost', () => {
+        describe('if posts were not loaded yet', () => {
+            beforeEach(() => {
+                reset(store, {
+                    isGettingPosts: false,
+                });
+
+                store.dispatch(new SelectPost(1));
+            });
+
+            it('logs an error', () => {
+                expect(state.logger.error).toHaveBeenCalledOnceWith(
+                    'Cannot select - posts not loaded'
+                );
+            });
+
+            it('does not change the selected post in the state', () => {
+                expect(
+                    store.selectSnapshot(AppState.isSelected(1))
+                ).toBeFalse();
+            });
+        });
+
+        describe('if the post ID is invalid', () => {
+            beforeEach(() => {
+                reset(store, {
+                    isGettingPosts: false,
+                    posts: anyPosts,
+                });
+
+                store.dispatch(new SelectPost(0));
+            });
+
+            it('logs an error', () => {
+                expect(state.logger.error).toHaveBeenCalledOnceWith(
+                    `Cannot select post with invalid ID "0"`
+                );
+            });
+
+            it('does not change the selected post in the state', () => {
+                expect(
+                    store.selectSnapshot(AppState.isSelected(1))
+                ).toBeFalse();
+            });
+        });
+
+        describe('if the post does not exist', () => {
+            beforeEach(() => {
+                reset(store, {
+                    isGettingPosts: false,
+                    posts: anyPosts,
+                });
+
+                store.dispatch(new SelectPost(9999));
+            });
+
+            it('logs an error', () => {
+                expect(state.logger.error).toHaveBeenCalledOnceWith(
+                    `Cannot select post with invalid ID "9999"`
+                );
+            });
+
+            it('does not change the selected post in the state', () => {
+                expect(
+                    store.selectSnapshot(AppState.isSelected(1))
+                ).toBeFalse();
+            });
+        });
+
+        it('records the selected post in the state', () => {
+            reset(store, {
+                isGettingPosts: false,
+                posts: anyPosts,
+            });
+
+            store.dispatch(new SelectPost(1));
+
+            expect(store.selectSnapshot(AppState.isSelected(1))).toBeTrue();
+        });
+    });
+
     describe('isGettingPosts', () => {
         it('returns the value of isGettingPosts', () => {
             reset(store, {
@@ -150,6 +226,41 @@ describe('AppState', () => {
         });
     });
 
+    describe('isSelected', () => {
+        describe('returns false', () => {
+            it('if there is no selected post', () => {
+                reset(store, {
+                    isGettingPosts: false,
+                    selectedPostId: 2,
+                });
+            });
+
+            it('if a different post is selected', () => {
+                reset(store, {
+                    isGettingPosts: false,
+                    posts: anyPosts,
+                    selectedPostId: 2,
+                });
+            });
+
+            afterEach(() => {
+                expect(
+                    store.selectSnapshot(AppState.isSelected(1))
+                ).toBeFalse();
+            });
+        });
+
+        it('returns true if the post is selected', () => {
+            reset(store, {
+                isGettingPosts: false,
+                posts: anyPosts,
+                selectedPostId: 1,
+            });
+
+            expect(store.selectSnapshot(AppState.isSelected(1))).toBeTrue();
+        });
+    });
+
     describe('posts', () => {
         it('returns the value of posts', () => {
             reset(store, {
@@ -158,6 +269,18 @@ describe('AppState', () => {
             });
 
             expect(store.selectSnapshot(AppState.posts)).toEqual(anyPosts);
+        });
+    });
+
+    describe('selectedPostId', () => {
+        it('returns the value of selectedPostId', () => {
+            reset(store, {
+                isGettingPosts: false,
+                posts: anyPosts,
+                selectedPostId: 1,
+            });
+
+            expect(store.selectSnapshot(AppState.selectedPostId)).toBe(1);
         });
     });
 });

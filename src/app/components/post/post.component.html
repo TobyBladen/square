@@ -1,3 +1,8 @@
-<div class="cursor-pointer bg-slate-500 m-1 h-20 w-20 flex flex-col justify-center items-center">
+<button class="flex flex-col !h-16 !w-16 lg:!h-24 lg:!w-24 xl:!h-32 xl:!w-32 justify-center items-center"
+        (click)="selectPost()"
+        data-testid="post-square"
+        mat-fab
+        extended
+        color="{{ (isSelected$ | async) ? 'accent' : 'primary' }}">
     <p class="text-xs">Post id: {{ post.id }}</p>
-</div>
+</button>
