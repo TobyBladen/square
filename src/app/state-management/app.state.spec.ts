@@ -3,6 +3,7 @@ import {
     HttpTestingController,
 } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { NgxsModule, Store } from '@ngxs/store';
 
@@ -20,6 +21,15 @@ describe('AppState', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [NgxsModule.forRoot([AppState]), HttpClientTestingModule],
+            providers: [
+                {
+                    provide: MatSnackBar,
+                    useFactory: (): MatSnackBar =>
+                        jasmine.createSpyObj<MatSnackBar>('MatSnackBar', [
+                            'open',
+                        ]),
+                },
+            ],
         }).compileComponents();
     });
 
@@ -98,6 +108,18 @@ describe('AppState', () => {
 
                 it('logs the error', () => {
                     expect(state.logger.error).toHaveBeenCalledTimes(1);
+                });
+
+                it('shows a snackbar message that something went wrong', () => {
+                    expect(
+                        TestBed.inject(MatSnackBar).open
+                    ).toHaveBeenCalledOnceWith(
+                        'Something went wrong. Please try again',
+                        'OK',
+                        {
+                            duration: 5000,
+                        }
+                    );
                 });
             });
 

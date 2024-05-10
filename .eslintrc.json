@@ -61,7 +61,18 @@
               ]
             }
           ],
+          "no-console": [
+            "error",
+            {
+              "allow": [
+                "error",
+                "debug",
+                "warn"
+              ]
+            }
+          ],
           "@typescript-eslint/explicit-function-return-type": "error", 
+          "no-debugger": "error",
           "no-duplicate-imports": "error",
           "no-redeclare": "error",
           "no-template-curly-in-string": "error",

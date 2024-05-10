@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
     Action,
@@ -27,7 +28,11 @@ export const appStateDefaults: AppStateModel = {
 export class AppState {
     readonly logger = new Logger('AppState');
 
-    constructor(private readonly httpClient: HttpClient) {}
+    constructor(
+        private readonly httpClient: HttpClient,
+        private ngZone: NgZone,
+        private readonly snackBar: MatSnackBar
+    ) {}
 
     static isSelected(postId: number): (state: AppStateModel) => boolean {
         return createSelector([AppState], (state: AppStateModel) => {
@@ -57,6 +62,16 @@ export class AppState {
                 isGettingPosts: false,
             });
             this.logger.error(error);
+
+            this.ngZone.run(() => {
+                this.snackBar.open(
+                    'Something went wrong. Please try again',
+                    'OK',
+                    {
+                        duration: 5000,
+                    }
+                );
+            });
         };
 
         this.httpClient
