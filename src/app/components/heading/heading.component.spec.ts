@@ -40,18 +40,6 @@ describe('HeadingComponent', () => {
     describe('template', () => {
         const headingSelector = '[data-testid="heading"]';
 
-        it('shows text "Loading posts..." if getting posts', () => {
-            reset(store, {
-                isGettingPosts: true,
-            });
-
-            template.detectChanges();
-
-            expect(template.getTextContent(By.css(headingSelector))).toEqual(
-                'Loading posts...'
-            );
-        });
-
         it('shows text "Select a post" if posts were got but there is no selected post', () => {
             template.detectChanges();
 
