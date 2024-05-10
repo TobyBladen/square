@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
@@ -13,15 +13,22 @@ import { Post } from './types/post';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [AsyncPipe, HeadingComponent, PostComponent, RouterOutlet],
+    imports: [
+        AsyncPipe,
+        HeadingComponent,
+        MatProgressSpinnerModule,
+        PostComponent,
+    ],
     selector: 'sq-app',
     standalone: true,
     templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
+    protected readonly isGettingPosts$?: Observable<boolean>;
     protected readonly posts$: Observable<readonly Post[] | undefined>;
 
     constructor(private readonly store: Store) {
+        this.isGettingPosts$ = store.select(AppState.isGettingPosts);
         this.posts$ = store.select(AppState.posts);
     }
 

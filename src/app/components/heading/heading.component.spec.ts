@@ -40,7 +40,19 @@ describe('HeadingComponent', () => {
     describe('template', () => {
         const headingSelector = '[data-testid="heading"]';
 
-        it('shows text "Select a post" if there is no selected post', () => {
+        it('shows text "Loading posts..." if getting posts', () => {
+            reset(store, {
+                isGettingPosts: true,
+            });
+
+            template.detectChanges();
+
+            expect(template.getTextContent(By.css(headingSelector))).toEqual(
+                'Loading posts...'
+            );
+        });
+
+        it('shows text "Select a post" if posts were got but there is no selected post', () => {
             template.detectChanges();
 
             expect(template.getTextContent(By.css(headingSelector))).toEqual(
@@ -48,7 +60,7 @@ describe('HeadingComponent', () => {
             );
         });
 
-        it('shows the selected post id if there is a selected post', () => {
+        it('shows the selected post id if posts were got and there is a selected post', () => {
             reset(store, {
                 isGettingPosts: false,
                 posts: anyPosts,

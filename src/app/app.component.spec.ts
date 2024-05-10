@@ -63,7 +63,15 @@ describe('AppComponent', () => {
             expect(template.get(By.css('sq-heading'))).toBeTruthy();
         });
 
-        it('shows all the posts', () => {
+        it('shows a loading spinner while getting posts', () => {
+            reset(store, { isGettingPosts: true });
+
+            template.detectChanges();
+
+            expect(template.get(By.css('mat-progress-spinner'))).toBeTruthy();
+        });
+
+        it('shows all the posts if they were got', () => {
             reset(store, { isGettingPosts: false, posts: anyPosts });
 
             template.detectChanges();
