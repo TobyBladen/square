@@ -14,12 +14,9 @@ import { AppState } from '../../state-management';
     templateUrl: './heading.component.html',
 })
 export class HeadingComponent {
-    protected readonly isGettingPosts$?: Observable<boolean>;
-
     protected readonly selectedPostId$?: Observable<number | undefined>;
 
     constructor(store: Store) {
-        this.isGettingPosts$ = store.select(AppState.isGettingPosts);
         this.selectedPostId$ = store.select(AppState.selectedPostId);
     }
 }
