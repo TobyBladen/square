@@ -1,3 +1,4 @@
+// Constructs an immutable object for unit test data with fluent interface
 export abstract class Builder<T> {
     protected target?: T;
 

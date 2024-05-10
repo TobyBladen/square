@@ -7,6 +7,7 @@ interface NativeElement {
     click: () => void;
 }
 
+// Class to encapsulate common template unit testing operations
 export class Template<T> {
     constructor(private readonly fixture: ComponentFixture<T>) {}
 

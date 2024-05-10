@@ -1,11 +1,10 @@
+@if ((isGettingPosts$ | async) === false) {
 <h1 class="flex flex-row justify-center mt-5 mb-8 text-3xl"
     data-testid="heading">
-    @if (isGettingPosts$ | async) {
-    Loading posts...
-    }
-    @else if (selectedPostId$ | async) {
+    @if (selectedPostId$ | async) {
     Selected post id: {{ selectedPostId$ | async }}
     } @else {
     Select a post
     }
 </h1>
+}

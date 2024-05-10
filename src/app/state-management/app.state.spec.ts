@@ -231,7 +231,6 @@ describe('AppState', () => {
             it('if there is no selected post', () => {
                 reset(store, {
                     isGettingPosts: false,
-                    selectedPostId: 2,
                 });
             });
 
@@ -274,6 +273,10 @@ describe('AppState', () => {
 
     describe('selectedPostId', () => {
         it('returns the value of selectedPostId', () => {
+            expect(
+                store.selectSnapshot(AppState.selectedPostId)
+            ).toBeUndefined();
+
             reset(store, {
                 isGettingPosts: false,
                 posts: anyPosts,
