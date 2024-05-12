@@ -125,7 +125,7 @@ of HTML, like embedded image files or CSS styling, to
 closely imitate a trustworthy organization's visual
 brand. This can help to lure receivers
 into a false sense of security,
-because the email really looks exactly like those they are
+because the email looks exactly like those they are
 used to receiving from a company they really trust. Thus,
 they are more likely to follow prompts to download malicious
 files or follow a malicious third-party link. This type of
@@ -210,10 +210,10 @@ Some advantages of immutability are:
    because their contents do not change over time.
 
 4. Developer productivity: Reduces the cognitive overhead of
-   developers considering if their object was
+   developers considering if their object
    could have been unexpectedly modified by some other
    code in the project they were not aware of. Personally, I
-   find this helps my focus and makes me more productive.
+   find this helps me focus and makes me more productive.
 
 #### Cons of immutability
 
@@ -223,9 +223,10 @@ existing ones in place, that can use more memory and require
 more CPU cycles. If you are working on a application where
 optimal performance is absolutely critical, for example, a
 game engine in C++, this can be a big deal. However, in my
-opinion, in the context of a your typical
+opinion, in the context of a typical
 TypeScript web app, the overhead
-is normally acceptable. Especially of the developer is aware
+is normally acceptable.
+This is especially true if the developer is aware
 of the problem and willing to fall back on mutable objects
 in the handful of cases where it is really important for
 performance.
@@ -304,7 +305,7 @@ globally mutable state is unavoidable. In these cases, I like
 to use a state management library like
 [NGXS](https://www.ngxs.io/).
 An NGXS state can only be mutated by dispatching predefined
-actions, inspired the Flux pattern. While the
+actions, inspired by the Flux pattern. While the
 state is still ultimately mutable, it restricts your
 ability to interact with the state outside of specific,
 explicit ways. It also provides great debugging tools
