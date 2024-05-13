@@ -316,17 +316,17 @@ of how an object was mutated and by which parts of the app.
 
 ### 4. How can you speed up the loading of an Angular web-application?
 
-First, try and diagnose what the bottleneck is. It is
+First, try and diagnose what the bottleneck is. Is it
 just assets like image files that are loading slowly?
-Or is the problem bundle size? Or all your users are in
-a country that's geographically far away? Depending on the
+Or is the problem bundle size? Or are all your users in
+a country that is geographically far away? Depending on the
 source of the issue, you could consider some of the following:
 
 -   Eliminate any [CommonJS dependencies](https://web.dev/articles/commonjs-larger-bundles)
 -   Use a reputable Content Delivery Network (CDN)
     like [CloudFront](https://aws.amazon.com/cloudfront/)
     to cache assets geographically closer
-    to your users.
+    to your users
 -   Check you are using [lazy-loading](https://angular.io/guide/standalone-components#lazy-loading-a-standalone-component) wherever possible
 -   Check your compiled JS and CSS code is minified
 -   Compress assets like image files to be a smaller size
@@ -342,16 +342,15 @@ if you find yourself needing it,
 it's possible you are doing something wrong anyway. If I were
 working in computer graphics then the hardware can certainly
 be crucial. But for just building normal
-websites, mediocre hardware
+websites, average hardware
 ought to be fine.
 
 On the other hand, needing to install a new software
 tool is something that happens to me
 all the time. Even something
 as simple as having the right IDE / Code Editor can make an
-enormous difference to developer productivity. Getting
-blocked by overzealous company firewalls,
-and so on, can be a real drag on development. Sometimes it
-can be a necessary evil in some security contexts. But
-I would not choose to have **unnecessary** restrictions on
+enormous difference to developer productivity. Being blocked
+from using the right tools can be a real drag on development time.
+Sometimes it can be a necessary evil in some security contexts.
+But I would not choose to have **unnecessary** restrictions on
 software if it could reasonably be avoided.
