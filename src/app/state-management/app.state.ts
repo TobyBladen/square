@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, NgZone } from '@angular/core';
+import { DestroyRef, inject, Injectable, NgZone } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
@@ -27,6 +28,7 @@ export const appStateDefaults: AppStateModel = {
 @Injectable()
 export class AppState {
     readonly logger = new Logger('AppState');
+    private readonly destroyRef = inject(DestroyRef);
 
     constructor(
         private readonly httpClient: HttpClient,
@@ -50,29 +52,8 @@ export class AppState {
             isGettingPosts: true,
         });
 
-        const next = (posts: readonly Post[]): void => {
-            context.patchState({
-                isGettingPosts: false,
-                posts,
-            });
-        };
-
-        const error = (error: any): void => {
-            context.patchState({
-                isGettingPosts: false,
-            });
-            this.logger.error(error);
-
-            this.ngZone.run(() => {
-                this.snackBar.open(
-                    'Something went wrong. Please try again',
-                    'OK',
-                    {
-                        duration: 5000,
-                    }
-                );
-            });
-        };
+        const next = this.onPostsGot.bind(this, context);
+        const error = this.onErrorGettingPosts.bind(this, context);
 
         this.httpClient
             .get<readonly Post[]>(`${environment.api}/posts`)
@@ -119,6 +100,39 @@ export class AppState {
     @Selector()
     static selectedPostId(state: AppStateModel): number | undefined {
         return state.selectedPostId;
+    }
+
+    private onErrorGettingPosts(
+        context: StateContext<AppStateModel>,
+        error: any
+    ): void {
+        context.patchState({
+            isGettingPosts: false,
+        });
+        this.logger.error(error);
+
+        this.ngZone.run(() => {
+            const ref = this.snackBar.open(
+                'Oops - something went wrong',
+                'RETRY'
+            );
+
+            ref.onAction()
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe(() => {
+                    context.dispatch(new GetPosts());
+                });
+        });
+    }
+
+    private onPostsGot(
+        context: StateContext<AppStateModel>,
+        posts: readonly Post[]
+    ): void {
+        context.patchState({
+            isGettingPosts: false,
+            posts,
+        });
     }
 
     private shouldSkipGettingPosts(

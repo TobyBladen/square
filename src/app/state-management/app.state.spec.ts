@@ -115,10 +115,7 @@ describe('AppState', () => {
                         TestBed.inject(MatSnackBar).open
                     ).toHaveBeenCalledOnceWith(
                         'Something went wrong. Please try again',
-                        'OK',
-                        {
-                            duration: 5000,
-                        }
+                        'OK'
                     );
                 });
             });
