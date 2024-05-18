@@ -12,9 +12,7 @@ Angular with [NGXS](https://www.ngxs.io/) state management.
 
 I chose NGXS as the state management library
 because it was designed to be relatively lightweight
-and low-boilerplate. It makes a few simplifications
-of the patterns seen in other libraries like NgRx.
-It is a good fit because this project is always intended
+and low-boilerplate.It is a good fit because this project is always intended
 to stay very small.
 
 _NB You should be familiar with the standard NGXS architecture
