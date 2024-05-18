@@ -3,9 +3,14 @@ import {
     HttpTestingController,
 } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+    MatSnackBar,
+    MatSnackBarRef,
+    TextOnlySnackBar,
+} from '@angular/material/snack-bar';
 
 import { NgxsModule, Store } from '@ngxs/store';
+import { Subject } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { anyPosts } from '../types/post';
@@ -13,8 +18,24 @@ import { GetPosts, SelectPost } from './actions';
 import { AppState } from './app.state';
 import { reset } from './functions';
 
+abstract class MatSnackBarMock {
+    static snackbarAction = new Subject<void>();
+
+    static create(): MatSnackBar {
+        return jasmine.createSpyObj<MatSnackBar>('MatSnackBar', {
+            open: jasmine.createSpyObj<MatSnackBarRef<TextOnlySnackBar>>(
+                'MatSnackBarRef',
+                {
+                    onAction: MatSnackBarMock.snackbarAction,
+                }
+            ),
+        });
+    }
+}
+
 describe('AppState', () => {
     let httpTestingController: HttpTestingController;
+    let matSnackBar: MatSnackBar;
     let state: AppState;
     let store: Store;
 
@@ -24,10 +45,7 @@ describe('AppState', () => {
             providers: [
                 {
                     provide: MatSnackBar,
-                    useFactory: (): MatSnackBar =>
-                        jasmine.createSpyObj<MatSnackBar>('MatSnackBar', [
-                            'open',
-                        ]),
+                    useFactory: MatSnackBarMock.create,
                 },
             ],
         }).compileComponents();
@@ -35,6 +53,7 @@ describe('AppState', () => {
 
     beforeEach(() => {
         httpTestingController = TestBed.inject(HttpTestingController);
+        matSnackBar = TestBed.inject(MatSnackBar);
         state = TestBed.inject(AppState);
         spyOn(state.logger, 'error');
         store = TestBed.inject(Store);
@@ -111,13 +130,24 @@ describe('AppState', () => {
                 });
 
                 it('shows a snackbar message that something went wrong', () => {
-                    expect(
-                        TestBed.inject(MatSnackBar).open
-                    ).toHaveBeenCalledOnceWith(
-                        'Something went wrong. Please try again',
-                        'OK'
+                    expect(matSnackBar.open).toHaveBeenCalledOnceWith(
+                        'Oops - something went wrong',
+                        'RETRY'
                     );
                 });
+
+                it('retries getting the posts if the snackbar action is clicked', fakeAsync(() => {
+                    MatSnackBarMock.snackbarAction.next();
+                    tick();
+
+                    expect(
+                        store.selectSnapshot(AppState.isGettingPosts)
+                    ).toBeTrue();
+                    const request = httpTestingController.expectOne(
+                        `${environment.api}/posts`
+                    );
+                    request.flush(anyPosts);
+                }));
             });
 
             describe('if getting the posts was successful', () => {
